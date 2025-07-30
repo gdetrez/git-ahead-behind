@@ -1,8 +1,7 @@
-name: Go
+name: CI
 
 on:
   push:
-    branches: [ "main" ]
   pull_request:
 
 permissions:
@@ -37,3 +36,14 @@ jobs:
         go-version-file: 'go.mod'
     - run: go fmt ./...
     - run: git diff --exit-code
+
+  cram:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-go@v4
+      with:
+        go-version-file: 'go.mod'
+    - run: go install -v .
+    - run: pip intsall cram
+    - run: cram test.t
