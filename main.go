@@ -44,7 +44,12 @@ func main() {
 		if (ref.Name().IsBranch() && !o.heads) || (ref.Name().IsRemote() && !o.remotes) || (!ref.Name().IsBranch() && !ref.Name().IsRemote()) {
 			return nil
 		}
-		commit, _ := r.CommitObject(ref.Hash())
+		if ref.Hash().IsZero() {
+			return nil
+		}
+
+		commit, err := r.CommitObject(ref.Hash())
+		die(err)
 		ancestors, _ := commit.MergeBase(baseComit)
 		ahead, _ := walk(commit, ancestors)
 		behind, _ := walk(baseComit, ancestors)
